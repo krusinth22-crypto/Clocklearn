@@ -1,216 +1,237 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>สื่อการเรียนรู้เรื่องนาฬิกา AM / PM</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f7fa;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สื่อการเรียนรู้เรื่องนาฬิกา</title>
 
-    h1 {
-      margin-bottom: 10px;
-    }
+<style>
+body{
+  font-family:"Segoe UI",Tahoma,sans-serif;
+  margin:0;
+  background:#f4f6f8;
+}
+header{
+  background:#4f46e5;
+  color:white;
+  text-align:center;
+  padding:1rem;
+}
+main{
+  max-width:1000px;
+  margin:auto;
+  padding:1rem;
+}
+.card{
+  background:white;
+  border-radius:16px;
+  padding:1rem;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
 
-    .clock {
-      width: 300px;
-      height: 300px;
-      border: 8px solid #333;
-      border-radius: 50%;
-      position: relative;
-      background: white;
-    }
+/* CLOCK */
+.clock{
+  width:220px;
+  height:220px;
+  border:8px solid #333;
+  border-radius:50%;
+  margin:1rem auto;
+  position:relative;
+}
+.number{
+  position:absolute;
+  width:24px;
+  height:24px;
+  text-align:center;
+  font-weight:bold;
+  transform:translate(-50%,-50%);
+}
+.hand{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform-origin:0% 50%;
+  transform:rotate(-90deg);
+}
+.hour{width:35%;height:6px;background:#333;}
+.minute{width:45%;height:4px;background:#4f46e5;}
+.second{width:48%;height:2px;background:red;}
 
-    .number {
-      position: absolute;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: #e3e6eb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
+.controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1rem;
+  justify-content:center;
+  margin-top:1rem;
+}
+button{
+  padding:.5rem 1rem;
+  font-size:1rem;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:#22c55e;
+  color:white;
+}
+button:hover{opacity:.9}
 
-    .hand {
-      position: absolute;
-      bottom: 50%;
-      left: 50%;
-      transform-origin: bottom;
-      transform: translateX(-50%) rotate(0deg);
-    }
-
-    .hour {
-      width: 6px;
-      height: 70px;
-      background: #333;
-    }
-
-    .minute {
-      width: 4px;
-      height: 100px;
-      background: #555;
-    }
-
-    .second {
-      width: 2px;
-      height: 120px;
-      background: red;
-    }
-
-    .center {
-      width: 12px;
-      height: 12px;
-      background: #333;
-      border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .controls {
-      margin-top: 20px;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-
-    input[type=range] {
-      width: 100%;
-    }
-
-    .info {
-      margin-top: 20px;
-      background: #ffffff;
-      padding: 15px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .toggle {
-      margin-top: 10px;
-    }
-  </style>
+footer{
+  text-align:center;
+  padding:1rem;
+  color:#666;
+}
+</style>
 </head>
+
 <body>
+<header>
+  <h1>⏰ สื่อการเรียนรู้เรื่องนาฬิกา</h1>
+  <p>นาฬิกาเข็ม • AM/PM • 24 ชั่วโมง • เสียงอ่านเวลา</p>
+</header>
 
-<h1>สื่อการเรียนรู้เรื่องนาฬิกา</h1>
-<p>แบบเข็ม | ระบบ AM / PM และการอ่านเวลาแบบไทย</p>
+<main>
+<div class="card">
 
-<div class="clock" id="clock">
-  <div class="hand hour" id="hourHand"></div>
-  <div class="hand minute" id="minuteHand"></div>
-  <div class="hand second" id="secondHand"></div>
-  <div class="center"></div>
-</div>
-
-<div class="controls">
-  <label>ชั่วโมง (1–12)
-    <input type="range" id="hourRange" min="1" max="12" value="12">
-  </label>
-
-  <label>นาที (0–59)
-    <input type="range" id="minuteRange" min="0" max="59" value="0">
-  </label>
-
-  <label>วินาที (0–59)
-    <input type="range" id="secondRange" min="0" max="59" value="0">
-  </label>
-
-  <div class="toggle">
-    <label>
-      <input type="radio" name="ampm" value="AM" checked> AM (ก่อนเที่ยง)
-    </label>
-    <label>
-      <input type="radio" name="ampm" value="PM"> PM (หลังเที่ยง)
-    </label>
+  <!-- CLOCK -->
+  <div class="clock" id="clock">
+    <div class="hand hour" id="hourHand"></div>
+    <div class="hand minute" id="minuteHand"></div>
+    <div class="hand second" id="secondHand"></div>
   </div>
-</div>
 
-<div class="info">
-  <h3>การอ่านเวลา</h3>
-  <p id="readNormal"></p>
-  <p id="readThai"></p>
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div>
+      <label>โหมดเวลา</label><br>
+      <select id="timeMode">
+        <option value="12">12 ชั่วโมง (AM/PM)</option>
+        <option value="24">24 ชั่วโมง</option>
+      </select>
+    </div>
+
+    <div>
+      <label>ชั่วโมง</label><br>
+      <input type="range" id="hourRange" min="0" max="23" value="0">
+    </div>
+
+    <div>
+      <label>นาที</label><br>
+      <input type="range" id="minuteRange" min="0" max="59" value="0">
+    </div>
+
+    <div>
+      <label>วินาที</label><br>
+      <input type="range" id="secondRange" min="0" max="59" value="0">
+    </div>
+
+    <div>
+      <label>AM / PM</label><br>
+      <select id="ampm">
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- DISPLAY -->
+  <p style="text-align:center;font-size:1.2rem;">
+    ⏱️ เวลา: <strong id="timeText"></strong><br>
+    🕒 ดิจิทัล: <strong id="digitalText"></strong> น.
+  </p>
+
+  <div style="text-align:center">
+    <button onclick="speakTime()">🔊 อ่านเวลา</button>
+  </div>
+
 </div>
+</main>
+
+<footer>
+  พัฒนาเพื่อการศึกษา | Krusin22
+</footer>
 
 <script>
-  const hourHand = document.getElementById('hourHand');
-  const minuteHand = document.getElementById('minuteHand');
-  const secondHand = document.getElementById('secondHand');
+/* ELEMENTS */
+const clock=document.getElementById("clock");
+const hourHand=document.getElementById("hourHand");
+const minuteHand=document.getElementById("minuteHand");
+const secondHand=document.getElementById("secondHand");
 
-  const hourRange = document.getElementById('hourRange');
-  const minuteRange = document.getElementById('minuteRange');
-  const secondRange = document.getElementById('secondRange');
+const hourRange=document.getElementById("hourRange");
+const minuteRange=document.getElementById("minuteRange");
+const secondRange=document.getElementById("secondRange");
 
-  const readNormal = document.getElementById('readNormal');
-  const readThai = document.getElementById('readThai');
+const timeMode=document.getElementById("timeMode");
+const ampm=document.getElementById("ampm");
 
-  const ampmRadios = document.querySelectorAll('input[name="ampm"]');
+const timeText=document.getElementById("timeText");
+const digitalText=document.getElementById("digitalText");
 
-  function updateClock() {
-    const hour = parseInt(hourRange.value);
-    const minute = parseInt(minuteRange.value);
-    const second = parseInt(secondRange.value);
+/* CREATE NUMBERS */
+for(let i=1;i<=12;i++){
+  const n=document.createElement("div");
+  n.className="number";
+  n.textContent=i;
+  const angle=(i-3)*2*Math.PI/12;
+  const r=95;
+  n.style.left=110+r*Math.cos(angle)+"px";
+  n.style.top =110+r*Math.sin(angle)+"px";
+  clock.appendChild(n);
+}
 
-    const ampm = document.querySelector('input[name="ampm"]:checked').value;
+/* READ TIME THAI */
+function readThai(h,m){
+  if(h===0&&m===0) return "เที่ยงคืน";
+  if(h===12&&m===0) return "เที่ยง";
 
-    const hourDeg = (hour % 12) * 30 + minute * 0.5;
-    const minuteDeg = minute * 6;
-    const secondDeg = second * 6;
+  let t="";
+  if(h<6) t=`ตี ${h||12}`;
+  else if(h<12) t=`${h} โมงเช้า`;
+  else if(h<18) t=`บ่าย ${h-12||12} โมง`;
+  else t=`${h-12} โมงเย็น`;
 
-    hourHand.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
-    minuteHand.style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
-    secondHand.style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+  if(m>0) t+=` ${m} นาที`;
+  return t;
+}
 
-    readNormal.textContent = `เวลาแบบสากล: ${hour}:${minute.toString().padStart(2,'0')}:${second.toString().padStart(2,'0')} ${ampm}`;
-    readThai.textContent = `การอ่านแบบไทย: ${thaiTime(hour, minute, ampm)}`;
+/* UPDATE CLOCK */
+function updateClock(){
+  const h=parseInt(hourRange.value);
+  const m=parseInt(minuteRange.value);
+  const s=parseInt(secondRange.value);
+
+  hourHand.style.transform=`rotate(${((h%12)*30)+(m*0.5)-90}deg)`;
+  minuteHand.style.transform=`rotate(${m*6-90}deg)`;
+  secondHand.style.transform=`rotate(${s*6-90}deg)`;
+
+  if(timeMode.value==="12"){
+    const dh=(h%12)||12;
+    timeText.textContent=`${dh}:${m.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")} ${ampm.value}`;
+    digitalText.textContent="—";
+  }else{
+    digitalText.textContent=`${h.toString().padStart(2,"0")}:${m.toString().padStart(2,"0")}`;
+    timeText.textContent=readThai(h,m);
   }
+}
 
-  function thaiTime(hour, minute, ampm) {
-    if (ampm === 'AM') {
-      if (hour === 12) return `เที่ยงคืน ${minute} นาที`;
-      if (hour < 6) return `ตี ${hour} ${minute} นาที`;
-      return `${hour} โมงเช้า ${minute} นาที`;
-    } else {
-      if (hour === 12) return `เที่ยง ${minute} นาที`;
-      if (hour < 6) return `บ่าย ${hour} โมง ${minute} นาที`;
-      return `${hour - 6} โมงเย็น ${minute} นาที`;
-    }
+/* SPEAK TIME */
+function speakTime(){
+  if(!("speechSynthesis" in window)){
+    alert("เบราว์เซอร์ไม่รองรับเสียงพูด");
+    return;
   }
+  const msg=new SpeechSynthesisUtterance(timeText.textContent);
+  msg.lang="th-TH";
+  msg.rate=0.9;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(msg);
+}
 
-  [...ampmRadios, hourRange, minuteRange, secondRange].forEach(el => {
-    el.addEventListener('input', updateClock);
-  });
-
-  // วางตัวเลขรอบหน้าปัด
-  const clock = document.getElementById('clock');
-  for (let i = 1; i <= 12; i++) {
-    const num = document.createElement('div');
-    num.className = 'number';
-    num.textContent = i;
-    const angle = (i * 30 - 90) * Math.PI / 180;
-    const r = 130;
-    num.style.left = 150 + r * Math.cos(angle) - 16 + 'px';
-    num.style.top = 150 + r * Math.sin(angle) - 16 + 'px';
-    clock.appendChild(num);
-  }
-
-  updateClock();
+/* EVENTS */
+document.querySelectorAll("input,select").forEach(e=>{
+  e.addEventListener("input",updateClock);
+});
+updateClock();
 </script>
-
 </body>
 </html>
